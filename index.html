@@ -28,12 +28,14 @@ textarea{width:100%;height:200px;background:var(--bg);color:var(--t);border:1px 
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal div{min-height:74px;border:1px solid var(--b);border-radius:8px;padding:4px;font-size:12px;overflow:hidden;background:var(--c)}.cal .h{min-height:0;border:0;background:none;color:var(--m);text-align:center}.cal .cd{cursor:pointer}.cal .td{border-color:var(--p)}
 .ev{display:block;margin-top:2px;padding:1px 4px;border-radius:4px;background:var(--p);color:#fff;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ev.v{background:var(--ok)}.ev.l{background:var(--w)}
 .pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.pl .card.on{border-color:var(--p);box-shadow:0 0 0 2px var(--p)}
-#ts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:99px;display:none;z-index:60}
+#ts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:99px;display:none;z-index:200}
+#au{position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;z-index:100;padding:14px}#au .card{max-width:380px;width:100%}
 </style></head><body>
 <div id="top"><button onclick="sb.classList.toggle('o')">☰</button>GestPro</div>
-<nav id="sb"></nav><main id="v"></main><div id="md" onclick="if(event.target==this)cm()"><div id="mc"></div></div><div id="ts"></div>
+<nav id="sb"></nav><main id="v"></main><div id="md" onclick="if(event.target==this)cm()"><div id="mc"></div></div><div id="ts"></div><div id="au" style="display:none"><div class="card" id="ac"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <script>
-const K="gestpro_demo_v1",uid=()=>Math.random().toString(36).slice(2,9),$=s=>document.querySelector(s);
+const uid=()=>crypto.randomUUID(),$=s=>document.querySelector(s);
 const eur=n=>new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n||0),fd=s=>s?s.split("-").reverse().join("/"):"",
 esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])),
 dt=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)},
@@ -51,8 +53,27 @@ conges:mk([["Lucas Bernard","Congés payés",dt(5),dt(9),"En attente"],["Inès M
 clients:mk([["Boulangerie Lemoine","lemoine@mail.fr","01 23 45 67 89","Paris","VIP"],["Sophie Lambert","sophie.l@mail.fr","06 12 34 56 78","Lyon","Actif"],["Hôtel du Parc","contact@hotelparc.fr","04 11 22 33 44","Nice","Actif"],["Marc Petit","marc.p@mail.fr","07 98 76 54 32","Lille","Prospect"]],["nom","email","tel","ville","statut"]),
 taches:mk([["Relancer le fournisseur Dupré",dt(1),"Haute","À faire"],["Préparer l’inventaire mensuel",dt(4),"Moyenne","À faire"],["Déclarer la TVA",dt(8),"Haute","À faire"],["Mettre à jour les prix",dt(-2),"Basse","Terminée"]],["titre","echeance","priorite","statut"]),
 set:{nom:"Ma Boutique SARL",siret:"123 456 789 00012",adresse:"12 rue de la Paix, 75002 Paris",tva:"FR12123456789",email:"contact@maboutique.fr",plan:"Gratuit"}}}
-let D;try{D=JSON.parse(localStorage.getItem(K))}catch(e){}if(!D)D=seed();
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}};
+const sb=supabase.createClient("https://oidtiwolcrdlzhfchieu.supabase.co","sb_publishable_f8Iyab68ehJcPMIZ7hfuSg_P1v0Hpbr");
+let D={},Snap={},Q=Promise.resolve();
+const clean=(k,r)=>{const o={id:r.id};M[k].f.forEach(f=>o[f[0]]=r[f[0]]);return o};
+const snap=()=>{for(const k in M)Snap[k]=Object.fromEntries(D[k].map(r=>[r.id,JSON.stringify(clean(k,r))]))};
+const save=()=>{Q=Q.then(async()=>{try{for(const k in M){const cur=Object.fromEntries(D[k].map(r=>[r.id,clean(k,r)])),old=Snap[k],ins=[],ns={};
+for(const id in cur){ns[id]=JSON.stringify(cur[id]);if(!(id in old))ins.push(cur[id]);else if(old[id]!==ns[id]){const{error}=await sb.from(k).update(cur[id]).eq("id",id);if(error)throw error}}
+if(ins.length){const{error}=await sb.from(k).insert(ins);if(error)throw error}
+const del=Object.keys(old).filter(id=>!(id in cur));if(del.length){const{error}=await sb.from(k).delete().in("id",del);if(error)throw error}
+Snap[k]=ns}}catch(e){toast("Erreur de sauvegarde : "+(e.message||e))}})};
+function authUI(m){$("#au").style.display="flex";$("#ac").innerHTML=`<h3 style="color:var(--p)">▣ GestPro</h3><p style="color:var(--m);margin-top:0">${m?"Créez votre compte gratuit":"Connectez-vous à votre espace"}</p><div class="fg"><label>E-mail<input id="ae" type="email" autocomplete="email"></label><label>Mot de passe${m?" (8 caractères min.)":""}<input id="ap" type="password" autocomplete="${m?"new-password":"current-password"}"></label></div><div class="bt" style="flex-direction:column"><button class="p" onclick="auth(${m})">${m?"Créer mon compte":"Se connecter"}</button><button onclick="authUI(${!m})">${m?"J’ai déjà un compte":"Pas de compte ? S’inscrire"}</button></div>`}
+async function auth(m){const email=$("#ae").value.trim(),password=$("#ap").value;if(!email||password.length<(m?8:1))return toast("Vérifiez l’e-mail et le mot de passe");
+const r=m?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});if(r.error)return toast(r.error.message);
+if(m&&!r.data.session){$("#ac").innerHTML=`<h3>📧 Vérifiez vos e-mails</h3><p>Cliquez sur le lien de confirmation reçu, puis revenez vous connecter.</p><button class="p" onclick="authUI(false)">Se connecter</button>`;return}load()}
+function ask(){$("#au").style.display="flex";$("#ac").innerHTML=`<h3>Bienvenue 👋</h3><p>Quel est le nom de votre entreprise ?</p><input id="an" placeholder="Ma Boutique SARL"><div class="bt"><button onclick="out()">Annuler</button><button class="p" onclick="newCo()">Continuer</button></div>`}
+async function newCo(){const n=$("#an").value.trim();if(!n)return toast("Nom requis");const{error}=await sb.rpc("creer_entreprise",{p_nom:n});if(error)return toast(error.message);load()}
+async function load(){try{const u=(await sb.auth.getUser()).data.user,{data:p}=await sb.from("profils").select("entreprise_id").eq("id",u.id).maybeSingle();if(!p)return ask();
+const ks=Object.keys(M),X=await Promise.all([sb.from("entreprises").select("*").eq("id",p.entreprise_id).single(),...ks.map(k=>sb.from(k).select("*").limit(5000))]);
+X.forEach(x=>{if(x.error)throw x.error});D={set:X[0].data};ks.forEach((k,i)=>D[k]=X[i+1].data);snap();$("#au").style.display="none";go()}catch(e){toast("Erreur : "+(e.message||e))}}
+async function out(){await sb.auth.signOut();D={};authUI(false)}
+async function boot(){const{data}=await sb.auth.getSession();data.session?load():authUI(false)}
+async function saveSet(){document.querySelectorAll('#sf input').forEach(e=>D.set[e.name]=e.value);const{id,nom,siret,adresse,tva,email,plan}=D.set,{error}=await sb.from("entreprises").update({nom,siret,adresse,tva,email,plan}).eq("id",id);toast(error?error.message:"Paramètres enregistrés ✔")}
 const P=()=>D.stock.map(x=>x.nom),S=()=>D.salaries.map(x=>x.nom);
 const M={
 finances:{t:"Finances",i:"💶",f:[["date","Date","d"],["libelle","Libellé","t"],["type","Type","s",["Recette","Dépense"]],["categorie","Catégorie","t"],["montant","Montant","e"]]},
@@ -107,12 +128,12 @@ c+=`<div class="cd ${iso==td?"td":""}" onclick="edit('taches','',{echeance:'${is
 $("#v").innerHTML=`<div class="bar"><h1>📅 Calendrier</h1><button onclick="mv(-1)">←</button><b>${f.toLocaleDateString("fr-FR",{month:"long",year:"numeric"})}</b><button onclick="mv(1)">→</button></div><p style="color:var(--m);margin-top:0">Cliquez sur un jour pour y ajouter une tâche. <span class="ev" style="display:inline">Tâches</span> <span class="ev l" style="display:inline">Congés</span> <span class="ev v" style="display:inline">Planning</span></p><div class="cal">${c}</div>`}
 function mv(d){St.cm+=d;if(St.cm<0){St.cm=11;St.cy--}if(St.cm>11){St.cm=0;St.cy++}cal()}
 function sett(){const s=D.set,pl=[["Gratuit","0 €/mois","1 utilisateur, 50 articles"],["Pro","19 €/mois","5 utilisateurs, export illimité"],["Business","49 €/mois","Illimité, multi-sites"]];
-$("#v").innerHTML=`<h1>⚙️ Paramètres</h1><div class="card" style="margin-bottom:12px"><h3>Entreprise</h3><div class="fg" id="sf">${[["nom","Raison sociale"],["siret","SIRET"],["adresse","Adresse"],["tva","N° TVA"],["email","E-mail"]].map(([k,l])=>`<label>${l}<input name="${k}" value="${esc(s[k])}"></label>`).join("")}</div><div class="bt"><button class="p" onclick="document.querySelectorAll('#sf input').forEach(e=>D.set[e.name]=e.value);save();toast('Paramètres enregistrés ✔')">Enregistrer</button></div></div>
-<div class="card" style="margin-bottom:12px"><h3>Abonnement (démonstration)</h3><div class="pl">${pl.map(p=>`<div class="card ${s.plan==p[0]?"on":""}"><b>${p[0]}</b><div>${p[1]}</div><small>${p[2]}</small><br><button class="s ${s.plan==p[0]?"p":""}" onclick="D.set.plan='${p[0]}';save();sett();toast('Offre ${p[0]} sélectionnée')">${s.plan==p[0]?"Offre actuelle":"Choisir"}</button></div>`).join("")}</div></div>
-<div class="card" style="margin-bottom:12px"><h3>Données</h3><div class="bar">${Object.keys(M).map(k=>`<button class="s" onclick="csv('${k}')">⬇ ${M[k].t}</button>`).join("")}</div><div class="bar"><button onclick="tg()">🌓 Thème clair/sombre</button><button class="d" onclick="modal('<h3>Réinitialiser la démo ?</h3><p>Toutes vos modifications seront perdues.</p><div class=bt><button onclick=cm()>Annuler</button><button class=p onclick=rs()>Réinitialiser</button></div>')">Réinitialiser les données</button></div><small style="color:var(--m)">Version démo : données stockées localement dans votre navigateur. La version production utilisera Supabase (Auth + Postgres avec Row Level Security par entreprise).</small></div>`}
-function rs(){D=seed();save();cm();go();toast("Données réinitialisées")}
+$("#v").innerHTML=`<h1>⚙️ Paramètres</h1><div class="card" style="margin-bottom:12px"><h3>Entreprise</h3><div class="fg" id="sf">${[["nom","Raison sociale"],["siret","SIRET"],["adresse","Adresse"],["tva","N° TVA"],["email","E-mail"]].map(([k,l])=>`<label>${l}<input name="${k}" value="${esc(s[k])}"></label>`).join("")}</div><div class="bt"><button class="p" onclick="saveSet()">Enregistrer</button></div></div>
+<div class="card" style="margin-bottom:12px"><h3>Abonnement (démonstration)</h3><div class="pl">${pl.map(p=>`<div class="card ${s.plan==p[0]?"on":""}"><b>${p[0]}</b><div>${p[1]}</div><small>${p[2]}</small><br><button class="s ${s.plan==p[0]?"p":""}" onclick="D.set.plan='${p[0]}';saveSet();sett();toast('Offre ${p[0]} sélectionnée')">${s.plan==p[0]?"Offre actuelle":"Choisir"}</button></div>`).join("")}</div></div>
+<div class="card" style="margin-bottom:12px"><h3>Données</h3><div class="bar">${Object.keys(M).map(k=>`<button class="s" onclick="csv('${k}')">⬇ ${M[k].t}</button>`).join("")}</div><div class="bar"><button onclick="tg()">🌓 Thème clair/sombre</button><button onclick="out()">Se déconnecter</button><button class="d" onclick="modal('<h3>Ajouter des données d’exemple ?</h3><p>Des données fictives seront ajoutées à votre compte.</p><div class=bt><button onclick=cm()>Annuler</button><button class=p onclick=rs()>Ajouter</button></div>')">Ajouter des données d’exemple</button></div><small style="color:var(--m)">Vos données sont stockées en ligne de façon sécurisée et isolées des autres entreprises (Supabase, Row Level Security).</small></div>`}
+function rs(){const x=seed();for(const k in M)D[k].push(...x[k]);save();cm();go();toast("Données d’exemple ajoutées")}
 function tg(){const r=document.documentElement,d=r.dataset.theme=="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme:dark)").matches);r.dataset.theme=d?"light":"dark"}
-function go(){const k=location.hash.slice(1)||"dashboard";document.querySelectorAll("#sb a").forEach(a=>a.classList.toggle("on",a.id=="n-"+k));$("#sb").classList.remove("o");
+function go(){if(!D.set)return;const k=location.hash.slice(1)||"dashboard";document.querySelectorAll("#sb a").forEach(a=>a.classList.toggle("on",a.id=="n-"+k));$("#sb").classList.remove("o");
 k=="dashboard"?dash():k=="cal"?cal():k=="set"?sett():M[k]?list(k):dash()}
-addEventListener("hashchange",()=>{go();scrollTo(0,0)});go();
+addEventListener("hashchange",()=>{go();scrollTo(0,0)});boot();
 </script></body></html>
