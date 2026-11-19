@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>GestPro – Gestion tout-en-un</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>GestPro – Gestion tout-en-un pour TPE et PME</title><meta name="description" content="Ventes, stocks, équipe, clients et factures : l’outil de gestion simple pour les TPE, PME et commerçants français.">
 <style>
 :root{--bg:#f4f6fa;--c:#fff;--t:#1b2333;--m:#667085;--b:#e4e8f0;--p:#4f46e5;--ok:#12a150;--ko:#e5484d;--w:#d98a06;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1420;--c:#171d2c;--t:#e8ecf5;--m:#98a2b3;--b:#27304a;--p:#8b93ff;--w:#f5b335;color-scheme:dark}}
@@ -22,17 +22,18 @@ button.p{background:var(--p);border-color:var(--p);color:#fff}button.d{color:var
 input,select{width:100%;padding:8px 10px;border:1px solid var(--b);border-radius:9px;background:var(--bg)}
 .tw{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--b);white-space:nowrap}th{font-size:12px;text-transform:uppercase;color:var(--m)}td.a{text-align:right}
 .bd{padding:2px 9px;border-radius:99px;font-size:12px;background:color-mix(in srgb,var(--w) 20%,transparent);color:var(--w)}.bd.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}.bd.ko{background:color-mix(in srgb,var(--ko) 18%,transparent);color:var(--ko)}
-#md{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;z-index:50;padding:14px}#md.o{display:flex}#md>div{background:var(--c);border-radius:16px;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
+#md{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;z-index:150;padding:14px}#md.o{display:flex}#md>div{background:var(--c);border-radius:16px;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
 .fg{display:grid;gap:10px}label{font-size:13px;color:var(--m)}.bt{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 textarea{width:100%;height:200px;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:9px;font:12px monospace}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal div{min-height:74px;border:1px solid var(--b);border-radius:8px;padding:4px;font-size:12px;overflow:hidden;background:var(--c)}.cal .h{min-height:0;border:0;background:none;color:var(--m);text-align:center}.cal .cd{cursor:pointer}.cal .td{border-color:var(--p)}
 .ev{display:block;margin-top:2px;padding:1px 4px;border-radius:4px;background:var(--p);color:#fff;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ev.v{background:var(--ok)}.ev.l{background:var(--w)}
 .pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.pl .card.on{border-color:var(--p);box-shadow:0 0 0 2px var(--p)}
 #ts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:99px;display:none;z-index:200}
+#lp{position:fixed;inset:0;overflow:auto;background:var(--bg);z-index:90;display:none}.lw{max-width:1000px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top,0px)) 20px 30px}.hero{text-align:center;padding:48px 0}.hero h2{font-size:clamp(28px,6vw,46px);line-height:1.15;margin:0 0 12px}.hero p{color:var(--m);font-size:18px;max-width:600px;margin:0 auto 22px}.gf{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 #au{position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;z-index:100;padding:14px}#au .card{max-width:380px;width:100%}
 </style></head><body>
 <div id="top"><button onclick="sb.classList.toggle('o')">☰</button>GestPro</div>
-<nav id="sb"></nav><main id="v"></main><div id="md" onclick="if(event.target==this)cm()"><div id="mc"></div></div><div id="ts"></div><div id="au" style="display:none"><div class="card" id="ac"></div></div>
+<nav id="sb"></nav><main id="v"></main><div id="md" onclick="if(event.target==this)cm()"><div id="mc"></div></div><div id="ts"></div><div id="au" style="display:none"><div class="card" id="ac"></div></div><div id="lp"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <script>
 const uid=()=>crypto.randomUUID(),$=s=>document.querySelector(s);
@@ -62,7 +63,7 @@ for(const id in cur){ns[id]=JSON.stringify(cur[id]);if(!(id in old))ins.push(cur
 if(ins.length){const{error}=await sb.from(k).insert(ins);if(error)throw error}
 const del=Object.keys(old).filter(id=>!(id in cur));if(del.length){const{error}=await sb.from(k).delete().in("id",del);if(error)throw error}
 Snap[k]=ns}}catch(e){toast("Erreur de sauvegarde : "+(e.message||e))}})};
-function authUI(m){$("#au").style.display="flex";$("#ac").innerHTML=`<h3 style="color:var(--p)">▣ GestPro</h3><p style="color:var(--m);margin-top:0">${m?"Créez votre compte gratuit":"Connectez-vous à votre espace"}</p><div class="fg"><label>E-mail<input id="ae" type="email" autocomplete="email"></label><label>Mot de passe${m?" (8 caractères min.)":""}<input id="ap" type="password" autocomplete="${m?"new-password":"current-password"}"></label></div><div class="bt" style="flex-direction:column"><button class="p" onclick="auth(${m})">${m?"Créer mon compte":"Se connecter"}</button><button onclick="authUI(${!m})">${m?"J’ai déjà un compte":"Pas de compte ? S’inscrire"}</button></div>`}
+function authUI(m){$("#au").style.display="flex";$("#ac").innerHTML=`<h3 style="color:var(--p)">▣ GestPro</h3><p style="color:var(--m);margin-top:0">${m?"Créez votre compte gratuit":"Connectez-vous à votre espace"}</p><div class="fg"><label>E-mail<input id="ae" type="email" autocomplete="email"></label><label>Mot de passe${m?" (8 caractères min.)":""}<input id="ap" type="password" autocomplete="${m?"new-password":"current-password"}"></label></div><div class="bt" style="flex-direction:column"><button class="p" onclick="auth(${m})">${m?"Créer mon compte":"Se connecter"}</button><button onclick="authUI(${!m})">${m?"J’ai déjà un compte":"Pas de compte ? S’inscrire"}</button><button onclick="landing()">← Retour à l’accueil</button></div>`}
 async function auth(m){const email=$("#ae").value.trim(),password=$("#ap").value;if(!email||password.length<(m?8:1))return toast("Vérifiez l’e-mail et le mot de passe");
 const r=m?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});if(r.error)return toast(r.error.message);
 if(m&&!r.data.session){$("#ac").innerHTML=`<h3>📧 Vérifiez vos e-mails</h3><p>Cliquez sur le lien de confirmation reçu, puis revenez vous connecter.</p><button class="p" onclick="authUI(false)">Se connecter</button>`;return}load()}
@@ -70,9 +71,17 @@ function ask(){$("#au").style.display="flex";$("#ac").innerHTML=`<h3>Bienvenue �
 async function newCo(){const n=$("#an").value.trim();if(!n)return toast("Nom requis");const{error}=await sb.rpc("creer_entreprise",{p_nom:n});if(error)return toast(error.message);load()}
 async function load(){try{const u=(await sb.auth.getUser()).data.user,{data:p}=await sb.from("profils").select("entreprise_id").eq("id",u.id).maybeSingle();if(!p)return ask();
 const ks=Object.keys(M),X=await Promise.all([sb.from("entreprises").select("*").eq("id",p.entreprise_id).single(),...ks.map(k=>sb.from(k).select("*").limit(5000))]);
-X.forEach(x=>{if(x.error)throw x.error});D={set:X[0].data};ks.forEach((k,i)=>D[k]=X[i+1].data);snap();$("#au").style.display="none";go()}catch(e){toast("Erreur : "+(e.message||e))}}
-async function out(){await sb.auth.signOut();D={};authUI(false)}
-async function boot(){const{data}=await sb.auth.getSession();data.session?load():authUI(false)}
+X.forEach(x=>{if(x.error)throw x.error});D={set:X[0].data};ks.forEach((k,i)=>D[k]=X[i+1].data);snap();$("#au").style.display="none";$("#lp").style.display="none";go()}catch(e){toast("Erreur : "+(e.message||e))}}
+async function out(){await sb.auth.signOut();D={};landing()}
+async function boot(){const{data}=await sb.auth.getSession();data.session?load():landing()}
+function landing(){$("#au").style.display="none";const l=$("#lp");l.style.display="block";l.scrollTop=0;
+const LF=[["📊","Tableau de bord","CA, dépenses, marge et alertes en un coup d’œil"],["💶","Finances","Recettes, dépenses et bénéfices"],["📦","Stocks et pertes","Inventaire et alertes de seuil"],["🚚","Fournisseurs","Commandes et réceptions liées au stock"],["👥","Équipe","Salariés, plannings, congés et absences"],["🤝","Clients","Fichier clients et prospects"],["🧾","Factures PDF","Numérotation automatique et TVA"],["📅","Calendrier et tâches","Tout votre planning au même endroit"],["⬇","Export CSV","Vos données restent les vôtres"]],
+LP=[["Gratuit","0 €","pour démarrer",["Tous les modules","1 utilisateur","Export CSV"],1],["Pro","19 €","par mois",["Tout du plan Gratuit","Jusqu’à 5 utilisateurs","Support prioritaire"],0],["Business","49 €","par mois",["Tout du plan Pro","Utilisateurs illimités","Multi-sites"],0]];
+l.innerHTML=`<div class="lw"><div class="bar"><b style="color:var(--p);font-size:20px;flex:1">▣ GestPro</b><button onclick="authUI(false)">Se connecter</button><button class="p" onclick="authUI(true)">Essayer gratuitement</button></div>
+<div class="hero"><h2>Gérez toute votre entreprise,<br>au même endroit.</h2><p>Ventes, stocks, équipe, clients et factures : l’outil simple pensé pour les TPE, PME et commerçants français.</p><button class="p" style="padding:12px 22px;font-size:16px" onclick="authUI(true)">Créer mon compte gratuit</button> <button style="padding:12px 22px;font-size:16px" onclick="document.getElementById('lf').scrollIntoView({behavior:'smooth'})">Voir les fonctionnalités</button></div>
+<h3 id="lf" style="text-align:center">Tout ce qu’il vous faut</h3><div class="gf">${LF.map(f=>`<div class="card"><div style="font-size:26px">${f[0]}</div><b>${f[1]}</b><br><small style="color:var(--m)">${f[2]}</small></div>`).join("")}</div>
+<h3 style="text-align:center;margin-top:36px">Tarifs simples</h3><div class="pl">${LP.map(p=>`<div class="card ${p[4]?"on":""}"><b>${p[0]}</b><div style="font-size:28px;font-weight:800">${p[1]}</div><small style="color:var(--m)">${p[2]}</small><ul style="padding-left:18px">${p[3].map(x=>`<li>${x}</li>`).join("")}</ul>${p[4]?`<button class="p" onclick="authUI(true)">Commencer gratuitement</button>`:`<small>Bientôt disponible</small>`}</div>`).join("")}</div>
+<p style="text-align:center;color:var(--m);margin-top:36px"><small>Vos données sont stockées dans l’Union européenne et isolées entreprise par entreprise.</small></p></div>`}
 async function saveSet(){document.querySelectorAll('#sf input').forEach(e=>D.set[e.name]=e.value);const{id,nom,siret,adresse,tva,email,plan}=D.set,{error}=await sb.from("entreprises").update({nom,siret,adresse,tva,email,plan}).eq("id",id);toast(error?error.message:"Paramètres enregistrés ✔")}
 const P=()=>D.stock.map(x=>x.nom),S=()=>D.salaries.map(x=>x.nom);
 const M={
