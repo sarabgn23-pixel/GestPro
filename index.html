@@ -1,0 +1,118 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>GestPro – Gestion tout-en-un</title>
+<style>
+:root{--bg:#f4f6fa;--c:#fff;--t:#1b2333;--m:#667085;--b:#e4e8f0;--p:#4f46e5;--ok:#12a150;--ko:#e5484d;--w:#d98a06;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1420;--c:#171d2c;--t:#e8ecf5;--m:#98a2b3;--b:#27304a;--p:#8b93ff;--w:#f5b335;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#0f1420;--c:#171d2c;--t:#e8ecf5;--m:#98a2b3;--b:#27304a;--p:#8b93ff;--w:#f5b335;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--t);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#sb{position:fixed;top:env(safe-area-inset-top,0px);bottom:0;left:0;width:230px;background:var(--c);border-right:1px solid var(--b);padding:14px 10px;overflow:auto;z-index:20;transition:transform .2s}
+.lg{font-weight:800;font-size:19px;padding:4px 10px 12px;color:var(--p)}
+#sb a{display:block;padding:8px 12px;border-radius:9px;color:var(--t);text-decoration:none;cursor:pointer}#sb a:hover{background:var(--bg)}#sb a.on{background:var(--p);color:#fff}
+main{margin-left:230px;padding:20px;max-width:1200px}
+#top{display:none;position:sticky;top:env(safe-area-inset-top,0px);background:var(--c);border-bottom:1px solid var(--b);padding:8px 12px;z-index:10;align-items:center;gap:10px;font-weight:700}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--c);z-index:30}
+@media(max-width:860px){#sb{transform:translateX(-100%)}#sb.o{transform:none}main{margin:0;padding:14px}#top{display:flex}}
+h1{font-size:22px;margin:0 0 14px}h3{margin:0 0 12px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:16px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px}.kp .card small{color:var(--m)}.kp b{display:block;font-size:22px}
+.g2{display:grid;grid-template-columns:2fr 1fr;gap:12px}@media(max-width:860px){.g2{grid-template-columns:1fr}}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}.bar h1{margin:0;flex:1}
+button,input,select{font:inherit;color:var(--t)}
+button{border:1px solid var(--b);background:var(--c);padding:7px 13px;border-radius:9px;cursor:pointer}button:hover{border-color:var(--p)}
+button.p{background:var(--p);border-color:var(--p);color:#fff}button.d{color:var(--ko)}button.s{padding:3px 9px;font-size:13px}
+input,select{width:100%;padding:8px 10px;border:1px solid var(--b);border-radius:9px;background:var(--bg)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--b);white-space:nowrap}th{font-size:12px;text-transform:uppercase;color:var(--m)}td.a{text-align:right}
+.bd{padding:2px 9px;border-radius:99px;font-size:12px;background:color-mix(in srgb,var(--w) 20%,transparent);color:var(--w)}.bd.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}.bd.ko{background:color-mix(in srgb,var(--ko) 18%,transparent);color:var(--ko)}
+#md{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;z-index:50;padding:14px}#md.o{display:flex}#md>div{background:var(--c);border-radius:16px;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
+.fg{display:grid;gap:10px}label{font-size:13px;color:var(--m)}.bt{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+textarea{width:100%;height:200px;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:9px;font:12px monospace}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal div{min-height:74px;border:1px solid var(--b);border-radius:8px;padding:4px;font-size:12px;overflow:hidden;background:var(--c)}.cal .h{min-height:0;border:0;background:none;color:var(--m);text-align:center}.cal .cd{cursor:pointer}.cal .td{border-color:var(--p)}
+.ev{display:block;margin-top:2px;padding:1px 4px;border-radius:4px;background:var(--p);color:#fff;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ev.v{background:var(--ok)}.ev.l{background:var(--w)}
+.pl{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.pl .card.on{border-color:var(--p);box-shadow:0 0 0 2px var(--p)}
+#ts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:99px;display:none;z-index:60}
+</style></head><body>
+<div id="top"><button onclick="sb.classList.toggle('o')">☰</button>GestPro</div>
+<nav id="sb"></nav><main id="v"></main><div id="md" onclick="if(event.target==this)cm()"><div id="mc"></div></div><div id="ts"></div>
+<script>
+const K="gestpro_demo_v1",uid=()=>Math.random().toString(36).slice(2,9),$=s=>document.querySelector(s);
+const eur=n=>new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR"}).format(n||0),fd=s=>s?s.split("-").reverse().join("/"):"",
+esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])),
+dt=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)},
+mk=(a,k)=>a.map(v=>Object.fromEntries(k.map((x,i)=>[x,v[i]]).concat([["id",uid()]])));
+function seed(){const tr=[];for(let i=5;i>=0;i--){const m=new Date();m.setDate(1);m.setMonth(m.getMonth()-i);const y=m.toISOString().slice(0,7),r=1373*(i+2)%2100;
+tr.push(...mk([[y+"-05","Ventes boutique","Recette","Ventes",8200+r],[y+"-18","Ventes en ligne","Recette","Ventes",2400+r/2],[y+"-02","Loyer","Dépense","Loyer",1800],[y+"-10","Achats marchandises","Dépense","Achats",4200+r/3],[y+"-28","Salaires","Dépense","Salaires",4100],[y+"-15","Énergie & divers","Dépense","Charges",650]],["date","libelle","type","categorie","montant"]))}
+return{tr_:0,finances:tr,
+stock:mk([["Café Arabica 1 kg","CAF-01",42,15,9.5,18.9],["Thé vert bio","THE-02",8,12,3.2,7.5],["Biscuits artisanaux","BIS-03",60,20,1.4,3.9],["Chocolat noir 70 %","CHO-04",25,10,2.1,4.8],["Miel de lavande","MIE-05",6,8,5.5,11.9],["Tasse en grès","TAS-06",30,10,4,12]],["nom","sku","qte","seuil","pa","pv"]),
+pertes:mk([[dt(-9),"Biscuits artisanaux",4,"Casse"],[dt(-3),"Miel de lavande",1,"Péremption"]],["date","produit","qte","motif"]),
+fournisseurs:mk([["Comptoir des Cafés","Jean Roux","contact@comptoir-cafes.fr","01 42 00 11 22",3],["Maison Dupré","Alice Dupré","commande@dupre.fr","04 78 12 34 56",5],["Ferme du Soleil","Paul Garnier","ferme@soleil.fr","05 61 98 76 54",2]],["nom","contact","email","tel","delai"]),
+commandes:mk([[dt(-6),"Comptoir des Cafés","Café Arabica 1 kg",20,190,"Reçue"],[dt(-1),"Maison Dupré","Thé vert bio",30,96,"En cours"],[dt(0),"Ferme du Soleil","Miel de lavande",24,132,"En cours"]],["date","fournisseur","produit","qte","montant","statut"]),
+salaries:mk([["Camille Martin","Responsable","CDI","camille@exemple.fr",2900],["Lucas Bernard","Vendeur","CDI","lucas@exemple.fr",2100],["Inès Moreau","Vendeuse","CDD","ines@exemple.fr",1950]],["nom","poste","contrat","email","salaire"]),
+plannings:mk([[dt(0),"Camille Martin","09:00","17:00"],[dt(0),"Lucas Bernard","10:00","18:00"],[dt(1),"Inès Moreau","09:00","15:00"],[dt(2),"Lucas Bernard","10:00","18:00"]],["date","salarie","debut","fin"]),
+conges:mk([["Lucas Bernard","Congés payés",dt(5),dt(9),"En attente"],["Inès Moreau","Maladie",dt(-4),dt(-2),"Validé"]],["salarie","type","du","au","statut"]),
+clients:mk([["Boulangerie Lemoine","lemoine@mail.fr","01 23 45 67 89","Paris","VIP"],["Sophie Lambert","sophie.l@mail.fr","06 12 34 56 78","Lyon","Actif"],["Hôtel du Parc","contact@hotelparc.fr","04 11 22 33 44","Nice","Actif"],["Marc Petit","marc.p@mail.fr","07 98 76 54 32","Lille","Prospect"]],["nom","email","tel","ville","statut"]),
+taches:mk([["Relancer le fournisseur Dupré",dt(1),"Haute","À faire"],["Préparer l’inventaire mensuel",dt(4),"Moyenne","À faire"],["Déclarer la TVA",dt(8),"Haute","À faire"],["Mettre à jour les prix",dt(-2),"Basse","Terminée"]],["titre","echeance","priorite","statut"]),
+set:{nom:"Ma Boutique SARL",siret:"123 456 789 00012",adresse:"12 rue de la Paix, 75002 Paris",tva:"FR12123456789",email:"contact@maboutique.fr",plan:"Gratuit"}}}
+let D;try{D=JSON.parse(localStorage.getItem(K))}catch(e){}if(!D)D=seed();
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}};
+const P=()=>D.stock.map(x=>x.nom),S=()=>D.salaries.map(x=>x.nom);
+const M={
+finances:{t:"Finances",i:"💶",f:[["date","Date","d"],["libelle","Libellé","t"],["type","Type","s",["Recette","Dépense"]],["categorie","Catégorie","t"],["montant","Montant","e"]]},
+stock:{t:"Stocks",i:"📦",f:[["nom","Produit","t"],["sku","Réf.","t"],["qte","Quantité","n"],["seuil","Seuil d’alerte","n"],["pa","Prix d’achat","e"],["pv","Prix de vente","e"]],act:[["Inventaire",r=>`inv('${r.id}')`]]},
+pertes:{t:"Pertes",i:"🗑️",f:[["date","Date","d"],["produit","Produit","s",P],["qte","Quantité","n"],["motif","Motif","s",["Casse","Péremption","Vol","Autre"]]],after:r=>{const p=D.stock.find(x=>x.nom==r.produit);if(p)p.qte=Math.max(0,p.qte-r.qte)}},
+fournisseurs:{t:"Fournisseurs",i:"🚚",f:[["nom","Société","t"],["contact","Contact","t"],["email","E-mail","t"],["tel","Téléphone","t"],["delai","Délai (jours)","n"]]},
+commandes:{t:"Commandes",i:"🧾",f:[["date","Date","d"],["fournisseur","Fournisseur","s",()=>D.fournisseurs.map(x=>x.nom)],["produit","Produit","s",P],["qte","Quantité","n"],["montant","Montant","e"],["statut","Statut","s",["En cours","Reçue","Annulée"]]],act:[["Réceptionner",r=>{if(r.statut!="En cours")return toast("Commande déjà traitée");r.statut="Reçue";const p=D.stock.find(x=>x.nom==r.produit);if(p)p.qte+=r.qte;D.finances.push({id:uid(),date:dt(0),libelle:"Commande "+r.fournisseur,type:"Dépense",categorie:"Achats",montant:r.montant});toast("Stock mis à jour et dépense enregistrée");return 1}]]},
+salaries:{t:"Salariés",i:"👥",f:[["nom","Nom","t"],["poste","Poste","t"],["contrat","Contrat","s",["CDI","CDD","Apprenti","Extra"]],["email","E-mail","t"],["salaire","Salaire brut/mois","e"]]},
+plannings:{t:"Plannings",i:"🗓️",f:[["date","Date","d"],["salarie","Salarié","s",S],["debut","Début","h"],["fin","Fin","h"]]},
+conges:{t:"Congés & absences",i:"🏖️",f:[["salarie","Salarié","s",S],["type","Type","s",["Congés payés","RTT","Maladie","Absence"]],["du","Du","d"],["au","Au","d"],["statut","Statut","s",["En attente","Validé","Refusé"]]],act:[["Valider",r=>{r.statut="Validé";return 1}],["Refuser",r=>{r.statut="Refusé";return 1}]]},
+clients:{t:"Clients",i:"🤝",f:[["nom","Nom","t"],["email","E-mail","t"],["tel","Téléphone","t"],["ville","Ville","t"],["statut","Statut","s",["Prospect","Actif","VIP"]]]},
+taches:{t:"Tâches",i:"✅",f:[["titre","Tâche","t"],["echeance","Échéance","d"],["priorite","Priorité","s",["Haute","Moyenne","Basse"]],["statut","Statut","s",["À faire","En cours","Terminée"]]],act:[["Terminer",r=>{r.statut="Terminée";return 1}]]}};
+const NAV=[["dashboard","📊","Tableau de bord"],["finances"],["stock"],["pertes"],["fournisseurs"],["commandes"],["salaries"],["plannings"],["conges"],["clients"],["taches"],["cal","📅","Calendrier"],["set","⚙️","Paramètres"]];
+const St={q:"",cy:new Date().getFullYear(),cm:new Date().getMonth()};
+$("#sb").innerHTML='<div class="lg">▣ GestPro</div>'+NAV.map(([k,i,t])=>`<a href="#${k}" id="n-${k}">${i||M[k].i} ${t||M[k].t}</a>`).join("");
+function toast(m){const e=$("#ts");e.textContent=m;e.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display="none",2500)}
+function modal(h){$("#mc").innerHTML=h;$("#md").classList.add("o")}function cm(){$("#md").classList.remove("o")}
+const cls=v=>/^(Validé|Reçue|Terminée|Actif|Recette|VIP|CDI|Basse)$/.test(v)?"ok":/^(Refusé|Dépense|Haute|Annulée)$/.test(v)?"ko":"";
+function cell(m,k,f,r){const v=r[f[0]];let h=f[2]=="e"?eur(v):f[2]=="d"?fd(v):f[2]=="s"?`<span class="bd ${cls(v)}">${esc(v)}</span>`:esc(v);
+if(k=="stock"&&f[0]=="qte"&&r.qte<=r.seuil)h=`<span class="bd ko">${v} ⚠</span>`;return `<td>${h}</td>`}
+function rows(k){const m=M[k],q=St.q.toLowerCase(),df=m.f.find(f=>f[2]=="d");
+let a=D[k].filter(r=>JSON.stringify(r).toLowerCase().includes(q));if(df)a.sort((x,y)=>(y[df[0]]||"").localeCompare(x[df[0]]||""));
+return a.map(r=>`<tr>${m.f.map(f=>cell(m,k,f,r)).join("")}<td class="a">${(m.act||[]).map((x,i)=>`<button class="s" onclick="act('${k}','${r.id}',${i})">${x[0]}</button>`).join(" ")} <button class="s" onclick="edit('${k}','${r.id}')">Modifier</button> <button class="s d" onclick="del('${k}','${r.id}')">Suppr.</button></td></tr>`).join("")||`<tr><td colspan="9" style="color:var(--m)">Aucun résultat.</td></tr>`}
+function list(k){const m=M[k];St.q="";$("#v").innerHTML=`<div class="bar"><h1>${m.i} ${m.t}</h1><input style="max-width:200px" placeholder="Rechercher…" oninput="St.q=this.value;$('#tb').innerHTML=rows('${k}')"><button onclick="csv('${k}')">⬇ Export CSV</button><button class="p" onclick="edit('${k}')">+ Ajouter</button></div><div class="card tw"><table><thead><tr>${m.f.map(f=>`<th>${f[1]}</th>`).join("")}<th></th></tr></thead><tbody id="tb">${rows(k)}</tbody></table></div>`}
+function act(k,id,i){const r=D[k].find(x=>x.id==id),a=M[k].act[i][1](r);if(typeof a=="string")return eval(a);if(a){save();go()}}
+function edit(k,id,pre){const m=M[k],r=id?D[k].find(x=>x.id==id):pre||{};
+modal(`<h3>${id?"Modifier":"Ajouter"} – ${m.t}</h3><div class="fg" id="fm">${m.f.map(([n,l,t,o])=>{const v=r[n]??(t=="d"?dt(0):"");const op=typeof o=="function"?o():o;
+return `<label>${l}${t=="s"?`<select name="${n}">${op.map(x=>`<option ${x==v?"selected":""}>${esc(x)}</option>`).join("")}</select>`:`<input name="${n}" type="${{d:"date",h:"time",n:"number",e:"number",t:"text"}[t]}" step="any" value="${esc(v)}">`}</label>`}).join("")}</div><div class="bt"><button onclick="cm()">Annuler</button><button class="p" onclick="sv('${k}','${id||""}')">Enregistrer</button></div>`)}
+function sv(k,id){const m=M[k],o={};for(const f of m.f){const e=$("#fm [name="+f[0]+"]");let v=e.value.trim();if(v===""){e.focus();return toast("Champ requis : "+f[1])}o[f[0]]=f[2]=="n"||f[2]=="e"?+v:v}
+if(id)Object.assign(D[k].find(x=>x.id==id),o);else{o.id=uid();D[k].push(o);m.after&&m.after(o)}save();cm();go();toast("Enregistré ✔")}
+function del(k,id){modal(`<h3>Supprimer cet élément ?</h3><p>Cette action est définitive.</p><div class="bt"><button onclick="cm()">Annuler</button><button class="p" onclick="D['${k}']=D['${k}'].filter(x=>x.id!='${id}');save();cm();go();toast('Supprimé')">Supprimer</button></div>`)}
+function inv(id){const r=D.stock.find(x=>x.id==id);modal(`<h3>Inventaire – ${esc(r.nom)}</h3><p>Stock théorique : ${r.qte}</p><label>Quantité comptée</label><input id="iq" type="number" value="${r.qte}"><div class="bt"><button onclick="cm()">Annuler</button><button class="p" onclick="const v=$('#iq').value;if(v!==''){const d=+v-r.qte;r.qte=+v;if(d<0)D.pertes.push({id:uid(),date:dt(0),produit:r.nom,qte:-d,motif:'Autre'});save();cm();go();toast('Écart : '+d)}">Valider</button></div>`)}
+function csv(k){const m=M[k],q=s=>'"'+String(s??"").replace(/"/g,'""')+'"',t=[m.f.map(f=>q(f[1])).join(";")].concat(D[k].map(r=>m.f.map(f=>q(r[f[0]])).join(";"))).join("\n");
+modal(`<h3>Export CSV – ${m.t}</h3><textarea id="cv" readonly>${esc(t)}</textarea><div class="bt"><button onclick="$('#cv').select();try{document.execCommand('copy');toast('Copié ✔')}catch(e){}">Copier</button><button class="p" onclick="dl('${k}')">Télécharger</button></div>`);window._c=t}
+function dl(k){try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+window._c],{type:"text/csv"}));a.download=k+".csv";a.click();toast("Téléchargement lancé")}catch(e){toast("Utilisez « Copier »")}}
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+function dash(){const T=D.finances,rec=sum(T.filter(x=>x.type=="Recette"),x=>x.montant),dep=sum(T.filter(x=>x.type=="Dépense"),x=>x.montant),ben=rec-dep,
+sv_=sum(D.stock,x=>x.qte*x.pa),al=D.stock.filter(x=>x.qte<=x.seuil),pv=sum(D.pertes,x=>x.qte*(D.stock.find(s=>s.nom==x.produit)?.pa||0));
+const ms=[...Array(6)].map((_,i)=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-5+i);return d.toISOString().slice(0,7)}),
+dd=ms.map(m=>[sum(T.filter(x=>x.type=="Recette"&&x.date.startsWith(m)),x=>x.montant),sum(T.filter(x=>x.type=="Dépense"&&x.date.startsWith(m)),x=>x.montant)]),mx=Math.max(1,...dd.flat());
+const bars=dd.map((v,i)=>{const x=40+i*92;return `<rect x="${x}" y="${190-v[0]/mx*170}" width="30" height="${v[0]/mx*170}" rx="4" fill="var(--p)"/><rect x="${x+34}" y="${190-v[1]/mx*170}" width="30" height="${v[1]/mx*170}" rx="4" fill="var(--ko)"/><text x="${x+32}" y="208" font-size="11" text-anchor="middle" fill="var(--m)">${ms[i].slice(5)}/${ms[i].slice(2,4)}</text>`}).join("");
+const cat={};T.filter(x=>x.type=="Dépense").forEach(x=>cat[x.categorie]=(cat[x.categorie]||0)+x.montant);
+const cats=Object.entries(cat).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div style="margin:8px 0"><small>${esc(c)} · ${eur(v)}</small><div style="height:8px;border-radius:5px;background:var(--b)"><div style="height:8px;border-radius:5px;background:var(--p);width:${v/dep*100}%"></div></div></div>`).join("");
+const K_=(l,v,c)=>`<div class="card"><small>${l}</small><b style="color:${c||"inherit"}">${v}</b></div>`;
+$("#v").innerHTML=`<h1>📊 Tableau de bord — ${esc(D.set.nom)}</h1><div class="kp">${K_("Chiffre d’affaires",eur(rec))}${K_("Dépenses",eur(dep))}${K_("Bénéfice",eur(ben),ben>=0?"var(--ok)":"var(--ko)")}${K_("Marge nette",(rec?ben/rec*100:0).toFixed(1)+" %")}${K_("Valeur du stock",eur(sv_))}${K_("Pertes",eur(pv),"var(--ko)")}${K_("Tâches à faire",D.taches.filter(x=>x.statut!="Terminée").length)}${K_("Congés en attente",D.conges.filter(x=>x.statut=="En attente").length)}</div>
+<div class="g2"><div class="card"><h3>Recettes <span style="color:var(--p)">■</span> vs dépenses <span style="color:var(--ko)">■</span> (6 mois)</h3><svg viewBox="0 0 600 220" style="width:100%"><line x1="30" y1="190" x2="590" y2="190" stroke="var(--b)"/>${bars}</svg></div><div class="card"><h3>Dépenses par catégorie</h3>${cats}</div></div>
+<div class="g2" style="margin-top:12px"><div class="card"><h3>⚠ Alertes de stock</h3>${al.map(x=>`<div>${esc(x.nom)} — <span class="bd ko">${x.qte} / seuil ${x.seuil}</span></div>`).join("")||"Aucune alerte."}</div><div class="card"><h3>Prochaines tâches</h3>${D.taches.filter(x=>x.statut!="Terminée").sort((a,b)=>a.echeance.localeCompare(b.echeance)).slice(0,5).map(x=>`<div>${fd(x.echeance)} — ${esc(x.titre)}</div>`).join("")||"Rien à faire 🎉"}</div></div>`}
+function cal(){const f=new Date(St.cy,St.cm,1),n=new Date(St.cy,St.cm+1,0).getDate(),off=(f.getDay()+6)%7,td=dt(0),pad=x=>String(x).padStart(2,"0");let c="";
+["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"].forEach(d=>c+=`<div class="h">${d}</div>`);for(let i=0;i<off;i++)c+="<div style='border:0;background:none'></div>";
+for(let d=1;d<=n;d++){const iso=`${St.cy}-${pad(St.cm+1)}-${pad(d)}`,ev=[...D.taches.filter(x=>x.echeance==iso).map(x=>`<span class="ev">✓ ${esc(x.titre)}</span>`),...D.conges.filter(x=>x.du<=iso&&x.au>=iso&&x.statut!="Refusé").map(x=>`<span class="ev l">${esc(x.salarie.split(" ")[0])} · ${esc(x.type)}</span>`),...D.plannings.filter(x=>x.date==iso).map(x=>`<span class="ev v">${esc(x.salarie.split(" ")[0])} ${x.debut}</span>`)];
+c+=`<div class="cd ${iso==td?"td":""}" onclick="edit('taches','',{echeance:'${iso}',priorite:'Moyenne',statut:'À faire'})"><b>${d}</b>${ev.join("")}</div>`}
+$("#v").innerHTML=`<div class="bar"><h1>📅 Calendrier</h1><button onclick="mv(-1)">←</button><b>${f.toLocaleDateString("fr-FR",{month:"long",year:"numeric"})}</b><button onclick="mv(1)">→</button></div><p style="color:var(--m);margin-top:0">Cliquez sur un jour pour y ajouter une tâche. <span class="ev" style="display:inline">Tâches</span> <span class="ev l" style="display:inline">Congés</span> <span class="ev v" style="display:inline">Planning</span></p><div class="cal">${c}</div>`}
+function mv(d){St.cm+=d;if(St.cm<0){St.cm=11;St.cy--}if(St.cm>11){St.cm=0;St.cy++}cal()}
+function sett(){const s=D.set,pl=[["Gratuit","0 €/mois","1 utilisateur, 50 articles"],["Pro","19 €/mois","5 utilisateurs, export illimité"],["Business","49 €/mois","Illimité, multi-sites"]];
+$("#v").innerHTML=`<h1>⚙️ Paramètres</h1><div class="card" style="margin-bottom:12px"><h3>Entreprise</h3><div class="fg" id="sf">${[["nom","Raison sociale"],["siret","SIRET"],["adresse","Adresse"],["tva","N° TVA"],["email","E-mail"]].map(([k,l])=>`<label>${l}<input name="${k}" value="${esc(s[k])}"></label>`).join("")}</div><div class="bt"><button class="p" onclick="document.querySelectorAll('#sf input').forEach(e=>D.set[e.name]=e.value);save();toast('Paramètres enregistrés ✔')">Enregistrer</button></div></div>
+<div class="card" style="margin-bottom:12px"><h3>Abonnement (démonstration)</h3><div class="pl">${pl.map(p=>`<div class="card ${s.plan==p[0]?"on":""}"><b>${p[0]}</b><div>${p[1]}</div><small>${p[2]}</small><br><button class="s ${s.plan==p[0]?"p":""}" onclick="D.set.plan='${p[0]}';save();sett();toast('Offre ${p[0]} sélectionnée')">${s.plan==p[0]?"Offre actuelle":"Choisir"}</button></div>`).join("")}</div></div>
+<div class="card" style="margin-bottom:12px"><h3>Données</h3><div class="bar">${Object.keys(M).map(k=>`<button class="s" onclick="csv('${k}')">⬇ ${M[k].t}</button>`).join("")}</div><div class="bar"><button onclick="tg()">🌓 Thème clair/sombre</button><button class="d" onclick="modal('<h3>Réinitialiser la démo ?</h3><p>Toutes vos modifications seront perdues.</p><div class=bt><button onclick=cm()>Annuler</button><button class=p onclick=rs()>Réinitialiser</button></div>')">Réinitialiser les données</button></div><small style="color:var(--m)">Version démo : données stockées localement dans votre navigateur. La version production utilisera Supabase (Auth + Postgres avec Row Level Security par entreprise).</small></div>`}
+function rs(){D=seed();save();cm();go();toast("Données réinitialisées")}
+function tg(){const r=document.documentElement,d=r.dataset.theme=="dark"||(!r.dataset.theme&&matchMedia("(prefers-color-scheme:dark)").matches);r.dataset.theme=d?"light":"dark"}
+function go(){const k=location.hash.slice(1)||"dashboard";document.querySelectorAll("#sb a").forEach(a=>a.classList.toggle("on",a.id=="n-"+k));$("#sb").classList.remove("o");
+k=="dashboard"?dash():k=="cal"?cal():k=="set"?sett():M[k]?list(k):dash()}
+addEventListener("hashchange",()=>{go();scrollTo(0,0)});go();
+</script></body></html>
